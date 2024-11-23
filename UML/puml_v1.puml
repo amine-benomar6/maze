@@ -1,11 +1,32 @@
 @startuml
 'https://plantuml.com/sequence-diagram
 
-autonumber
+interface Tuiles <<interface>>{
 
-Alice -> Bob: Authentication Request
-Bob --> Alice: Authentication Response
+}
 
-Alice -> Bob: Another authentication Request
-Alice <-- Bob: another authentication Response
+class TuileT implements Tuiles{
+}
+
+class TuileDroite implements Tuiles{
+}
+
+class TuileAngle implements Tuiles{
+}
+
+class Objectif{
+    + <<Create>>Objectif(nomObj : String, posX : Integer, posY : Integer)
+}
+
+class Plateau{
+    <<Create>>Plateau()
+}
+
+class Joueur{
+    - objectifActuel: Objectif
+    + getNbObjRecup(): Integer
+    + getNbObjRestant(): Integer
+}
+
+
 @enduml
