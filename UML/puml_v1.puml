@@ -79,7 +79,7 @@ package View {
 
 package Controller {
     class GameController {
-        +game: Game
+        -game: Game
         +rotateExtraTile(direction: String): void
         +pushRow(rowIndex: Integer, direction: Integer): void
         +pushColumn(colIndex: Integer, direction: Integer): void
