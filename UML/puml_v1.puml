@@ -1,32 +1,93 @@
 @startuml
-'https://plantuml.com/sequence-diagram
 
-interface Tuiles <<interface>>{
+package Model {
+    interface Tile {
+        +rotate(): void
+        +getType(): String
+    }
+    class FixedTile implements Tile {
+        +rotate(): void
+        +getType(): String
+    }
+    class MovableTile implements Tile {
+        +rotate(): void
+        +getType(): String
+    }
+    class TileFactory {
+        +createTile(type: String): Tile
+    }
 
+    class Board {
+        -tiles: Tile[][]
+        -extraTile: Tile
+        +initializeBoard(): void
+        +pushRow(rowIndex: int, direction: String): void
+        +pushColumn(colIndex: int, direction: String): void
+    }
+
+    class Objective {
+        +id: int
+        +description: String
+    }
+
+    class Player {
+        +name: String
+        +currentTile: Tile
+        +currentObjective: Objective
+        +completedObjectives: List<Objective>
+        +move(direction: String): boolean
+    }
+
+    class Game {
+        +players: List<Player>
+        +board: Board
+        +start(): void
+        +end(): void
+        +nextTurn(): void
+    }
+
+    ' Observer Pattern
+    interface GameObserver {
+        +update(game: Game): void
+    }
 }
 
-class TuileT implements Tuiles{
+package "View" {
+    class MainScreen {
+        +update(game: Game): void
+        +displayBoard(board: Board): void
+        +displayPlayerInfo(players: List<Player>): void
+    }
+    class EndScreen {
+        +displayWinner(player: Player): void
+    }
 }
 
-class TuileDroite implements Tuiles{
+package Controller {
+    class GameController {
+        +game: Game
+        +handlePlayerAction(action: String, params: Object): void
+        +rotateExtraTile(direction: String): void
+        +pushRow(rowIndex: int, direction: String): void
+        +pushColumn(colIndex: int, direction: String): void
+        +movePlayer(player: Player, direction: String): void
+    }
 }
 
-class TuileAngle implements Tuiles{
-}
+Tile <|.. FixedTile
+Tile <|.. MovableTile
+TileFactory ..> Tile
+Board o-- Tile
+Board ..> TileFactory
+Game o-- Board
+Game o-- Player
+Player ..> Objective
+Game ..|> GameObserver
 
-class Objectif{
-    + <<Create>>Objectif(nomObj : String, posX : Integer, posY : Integer)
-}
+GameObserver <|-- MainScreen
+GameObserver <|-- EndScreen
 
-class Plateau{
-    <<Create>>Plateau()
-}
-
-class Joueur{
-    - objectifActuel: Objectif
-    + getNbObjRecup(): Integer
-    + getNbObjRestant(): Integer
-}
-
+GameController ..> Game
+GameController ..> MainScreen
 
 @enduml
