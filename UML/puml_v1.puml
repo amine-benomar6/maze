@@ -1,58 +1,72 @@
 @startuml
 
+skinparam style strictuml
+skinparam classAttributeIconSize 0
+skinparam classFontStyle Bold
+hide enum methods
+hide interface attributes
+
 package Model {
-    interface Tile {
+    abstract Tile {
+        +<<Create>>Tile()
         +rotate(): void
         +getType(): String
     }
-    class FixedTile implements Tile {
+    class TileT extends Tile {
         +rotate(): void
-        +getType(): String
+        +getType(): Integer
     }
-    class MovableTile implements Tile {
+    class TileLine extends Tile {
         +rotate(): void
-        +getType(): String
+        +getType(): Integer
     }
+    class TileL extends Tile {
+        +rotate(): void
+        +getType(): Integer
+    }
+
     class TileFactory {
-        +createTile(type: String): Tile
+        +<<Create>>TileFactory()
+        +createTileL(): Tile
+        +createTileT(): Tile
+        +createTileLine(): Tile
     }
 
     class Board {
-        -tiles: Tile[][]
+        -tiles: List<Tile>
         -extraTile: Tile
         +initializeBoard(): void
-        +pushRow(rowIndex: int, direction: String): void
-        +pushColumn(colIndex: int, direction: String): void
+        +pushRow(rowIndex: Integer, direction: Integer): void
+        +pushColumn(colIndex: Integer, direction: Integer): void
     }
 
     class Objective {
-        +id: int
-        +description: String
+        -id: Integer
+        -position: Integer
     }
 
     class Player {
-        +name: String
-        +currentTile: Tile
-        +currentObjective: Objective
-        +completedObjectives: List<Objective>
-        +move(direction: String): boolean
+        -num: Integer
+        -currentTile: Tile
+        -currentObjective: Objective
+        -completedObjectives: List<Objective>
+        +move(direction: Integer): boolean
     }
 
     class Game {
-        +players: List<Player>
-        +board: Board
+        -players: List<Player>
+        -board: Board
         +start(): void
         +end(): void
         +nextTurn(): void
     }
 
-    ' Observer Pattern
     interface GameObserver {
         +update(game: Game): void
     }
 }
 
-package "View" {
+package View {
     class MainScreen {
         +update(game: Game): void
         +displayBoard(board: Board): void
@@ -66,23 +80,24 @@ package "View" {
 package Controller {
     class GameController {
         +game: Game
-        +handlePlayerAction(action: String, params: Object): void
         +rotateExtraTile(direction: String): void
-        +pushRow(rowIndex: int, direction: String): void
-        +pushColumn(colIndex: int, direction: String): void
-        +movePlayer(player: Player, direction: String): void
+        +pushRow(rowIndex: Integer, direction: Integer): void
+        +pushColumn(colIndex: Integer, direction: Integer): void
+        +movePlayer(player: Player, direction: Integer): void
     }
 }
 
-Tile <|.. FixedTile
-Tile <|.. MovableTile
-TileFactory ..> Tile
-Board o-- Tile
-Board ..> TileFactory
+TileFactory ..> Tile : <<uses>>
+TileFactory ..> TileT : <<uses>>
+TileFactory ..> TileL : <<uses>>
+TileFactory ..> TileLine : <<uses>>
+
+Board ..> TileFactory : <<uses>>
 Game o-- Board
 Game o-- Player
 Player ..> Objective
 Game ..|> GameObserver
+Board o-- Tile : > <<uses>>
 
 GameObserver <|-- MainScreen
 GameObserver <|-- EndScreen
