@@ -1,15 +1,16 @@
 package Model;
 
-public class TileLine extends Tile{
-    public TileLine(){}
+public class TileAngle extends Tile{
+    public TileAngle(){
+    }
 
     @Override
     public TypeTile getType(){
-        return TypeTile.LINE;
+        return TypeTile.ANGLE;
     }
 
     @Override
     public String affichage(){
-        return "-";
+        return "L";
     }
 }

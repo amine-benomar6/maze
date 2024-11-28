@@ -2,8 +2,8 @@ package Model;
 
 public class TileFactory {
     public TileFactory(){}
-    public Tile createTileL(){
-        return new TileL();
+    public Tile createTileAngle(){
+        return new TileAngle();
     }
 
     public Tile createTileLine(){

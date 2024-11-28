@@ -5,35 +5,55 @@ import java.util.Collections;
 import java.util.List;
 
 public class Board {
-    private List<Tile> tiles;
+    private Tile[][] tiles;
     private Tile extraTile;
     private TileFactory tileFactory = new TileFactory();
 
     public Board() {
-        tiles = new ArrayList<>();
+        tiles = new Tile[7][7];
         initializeBoard();
     }
 
     public void initializeBoard(){
+        int totalIndex = 0;
+
         for(int i=0; i<20; i++){
-            tiles.add(tileFactory.createTileL());
+            int line = totalIndex / 7;
+            int colum = totalIndex % 7;
+            Position position=new Position(line,colum);
+            tiles[line][colum] = tileFactory.createTileAngle();
+            tiles[line][colum].setPosition(position);
+            totalIndex++;
         }
 
-        for(int i=0; i<12; i++){
-            tiles.add(tileFactory.createTileLine());
+        for(int i=0; i<12; i++) {
+            int line = totalIndex / 7;
+            int colum = totalIndex % 7;
+            Position position=new Position(line,colum);
+            tiles[line][colum] = tileFactory.createTileLine();
+            tiles[line][colum].setPosition(position);
+            totalIndex++;
         }
 
         for(int i=0; i<17; i++){
-            tiles.add(tileFactory.createTileT());
+            int line = totalIndex / 7;
+            int colum = totalIndex % 7;
+            Position position=new Position(line,colum);
+            tiles[line][colum] = tileFactory.createTileT();
+            tiles[line][colum].setPosition(position);
+            totalIndex++;
         }
 
-        Collections.shuffle(tiles);
 
         extraTile=tileFactory.createTileT();
     }
 
-    public List<Tile> getTiles() {
+    public Tile[][] getTiles() {
         return tiles;
+    }
+
+    public Tile getTile(Position position){
+        return tiles[position.getPositionX()][position.getPositionY()];
     }
 
     public Tile getExtraTile() {
