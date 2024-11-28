@@ -6,103 +6,183 @@ skinparam classFontStyle Bold
 hide enum methods
 hide interface attributes
 
-package Model {
-    abstract Tile {
-        +<<Create>>Tile()
-        +rotate(): void
-        +getType(): String
-    }
-    class TileT extends Tile {
-        +rotate(): void
-        +getType(): Integer
-    }
-    class TileLine extends Tile {
-        +rotate(): void
-        +getType(): Integer
-    }
-    class TileL extends Tile {
-        +rotate(): void
-        +getType(): Integer
+package Model
+{
+    abstract Tile <<abstract>>
+    {
+        - isMovable : Boolean
+        - isBlockedRight : Boolean
+        - isBlockedLeft : Boolean
+        - isBlockedTop : Boolean
+        - isBlockedBottom : Boolean
+        + <<Create>>Tile(position : Position)
+        + getPosition() : position
+        + getRight() : Boolean
+        + getLeft() : Boolean
+        + getTop() : Boolean
+        + getBottom() : Boolean
+         {abstract} + rotate(sens : Integer)
+        {abstract} +getType(): TypeTile
     }
 
-    class TileFactory {
+    class TileT extends Tile
+    {
+        + rotate(sens : Integer)
+        +getType(): TypeTile
+    }
+
+    class TileLine extends Tile
+    {
+        + rotate(sens : Integer)
+        +getType(): TypeTile
+    }
+
+    class TileAngle extends Tile
+    {
+        + rotate(sens : Integer)
+        +getType(): TypeTile
+    }
+
+    class TileFactory
+    {
         +<<Create>>TileFactory()
-        +createTileL(): Tile
+        +createTileAngle(): Tile
         +createTileT(): Tile
         +createTileLine(): Tile
     }
 
-    class Board {
-        -tiles: List<Tile>
-        -extraTile: Tile
-        +initializeBoard(): void
-        +pushRow(rowIndex: Integer, direction: Integer): void
-        +pushColumn(colIndex: Integer, direction: Integer): void
+    enum Direction <<enum>>
+    {
+         TOP
+         BOTTOM
+         LEFT
+         RIGHT
     }
 
-    class Objective {
-        -id: Integer
-        -position: Integer
+    enum TypeTile <<enum>>
+    {
+         T
+         ANGLE
+         LINE
     }
 
-    class Player {
-        -num: Integer
-        -currentTile: Tile
-        -currentObjective: Objective
-        -completedObjectives: List<Objective>
-        +move(direction: Integer): boolean
+    class Board
+    {
+        +<<Create>> Board()
+        +initializeBoard()
+        +pushRow(rowIndex : Integer, direction : Direction)
+        +pushColumn(colIndex : Integer, direction : Direction)
+        +getExtraTile() : Tile
     }
 
-    class Game {
-        -players: List<Player>
-        -board: Board
-        +start(): void
-        +end(): void
-        +nextTurn(): void
+    class Objective
+    {
+        - nameObjective : String
+        + <<Create>>Objective(position : Position)
+        +getPosition() : Position
     }
 
-    interface GameObserver {
-        +update(game: Game): void
+    class Player
+    {
+        -numberReclaimedObjectives : Integer
+        -numberRemainingObjectives : Integer
+        +<<Create>>Player(position : Position, objectives : Objective[*])
+        +getPosition() : Position
+        +aWins() : Boolean
+        +move(direction : Direction) : boolean
+    }
+
+    class Game
+    {
+        +initializeGame()
+        +initialisatizePlayer()
+        +start()
+        +currentPlayer(player : Player)
+        +pushTile(tile : Tile, player: Player)
+        +movePlayer(player : Player)
+        +notifyMove(player : Player, position : Position)
+        +notifyPush()
+        +end()
+    }
+
+    interface GameObserver <<interface>>
+    {
+        +update(game: Game)
+    }
+
+    class Position
+    {
+        + <<Create>> Position(positionX : Integer, positionY : Integer)
+        - positionX : Integer
+        - positionY : Integer
+        + getPositionX() : Integer
+        + getPositionY() : Integer
+        + setPositionX(position : Integer)
+        + setPositionY(position : Integer)
     }
 }
 
-package View {
-    class MainScreen {
-        +update(game: Game): void
-        +displayBoard(board: Board): void
-        +displayPlayerInfo(players: List<Player>): void
+package View
+{
+    class MainScreen implements Model.GameObserver
+   {
+        +update(game: Game)
+        +displayBoard(board: Board)
+        +displayPlayerInfo(players: List<Player>)
     }
-    class EndScreen {
-        +displayWinner(player: Player): void
+    class EndScreen implements Model.GameObserver
+    {
+        +displayWinner(player: Player)
     }
 }
 
-package Controller {
-    class GameController {
+package Controller
+{
+    class GameController
+    {
         -game: Game
-        +rotateExtraTile(direction: String): void
-        +pushRow(rowIndex: Integer, direction: Integer): void
-        +pushColumn(colIndex: Integer, direction: Integer): void
-        +movePlayer(player: Player, direction: Integer): void
+        +rotateExtraTile(direction: String)
+        +pushRow(rowIndex: Integer, direction: Integer)
+        +pushColumn(colIndex: Integer, direction: Integer)
+        +movePlayer(player: Player, direction: Integer)
     }
 }
 
 TileFactory ..> Tile : <<uses>>
 TileFactory ..> TileT : <<uses>>
-TileFactory ..> TileL : <<uses>>
+TileFactory ..> TileAngle : <<uses>>
 TileFactory ..> TileLine : <<uses>>
 
-Board ..> TileFactory : <<uses>>
-Game o-- Board
-Game o-- Player
-Player ..> Objective
-Game ..|> GameObserver
-Board o-- Tile : > <<uses>>
+Tile ..> TypeTile : <<uses>>
+TileT ..> TypeTile : <<uses>>
+TileAngle ..> TypeTile : <<uses>>
+TileLine ..> TypeTile : <<uses>>
 
-GameObserver <|-- MainScreen
-GameObserver <|-- EndScreen
+Player ..> Direction : <<uses>>
+
+Game ..> Tile : <<uses>>
+
+Tile o--> "  1\n - position" Position
+Player o--> "  1\n - position" Position
+Objective o--> "  1\n - position" Position
+
+
+Board ..> TileFactory : <<uses>>
+Game o--> "  1\n - board" Board
+Game *--> "  4\n - player"Player
+Game o--> "  *\n - observers" GameObserver
+
+Player o--> "1\n- currentObjective" Objective
+Player o--> "0 .. *\n- objectives" Objective
+Board *--> "49 \n- tiles" Tile : > contains
+Board o--> "1\n- extraTile" Tile : > contains
+Board *--> "24\n- objectives" Objective
+Board o--> "4\n- pions" Player
+
+
+
+
 
 GameController ..> Game
-GameController ..> MainScreen
 
 @enduml
