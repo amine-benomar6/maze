@@ -1,18 +1,33 @@
 package Controller;
 
-import Model.Board;
-import Model.Tile;
-import Model.TileFactory;
-import Model.TileL;
+import Model.*;
 
 public class Game {
     public static void main(String[] args){
         Board board = new Board();
-        for(int i=0; i<49; i++){
-            System.out.print(board.getTiles().get(i).affichage());
-            if((i+1)%7==0){
-                System.out.print("\n");
+        Position positionJ1 = new Position(3,4);
+        Player player = new Player(1,positionJ1);
+        for(int i=0; i<7; i++){
+            for(int j=0; j<7; j++)
+            {
+                System.out.print(board.getTile(new Position(i,j)).affichage());
             }
+            System.out.print("\n");
+        }
+
+        System.out.println("\n"+board.getExtraTile().affichage());
+
+        for(int i=0; i<7; i++){
+            for(int j=0; j<7; j++)
+            {
+                if(i==player.getPosition().getPositionX() && j==player.getPosition().getPositionY()){
+                    System.out.print(player.affichage());
+                }
+                else {
+                    System.out.print(board.getTile(new Position(i, j)).affichage());
+                }
+            }
+            System.out.print("\n");
         }
 
         System.out.println("\n"+board.getExtraTile().affichage());
