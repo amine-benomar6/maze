@@ -52,6 +52,47 @@ public class Board {
         return tiles;
     }
 
+    public void pushRow(int row, Direction direction){
+        Tile extraTileTemp=getExtraTile();
+        if(direction==Direction.LEFT){
+            extraTile=tiles[row][6];
+            for(int i=6; i>0; i--){
+                tiles[row][i]=tiles[row][i-1];
+            }
+            tiles[row][0]=extraTileTemp;}
+        else if(direction==Direction.RIGHT){
+            extraTile = tiles[row][0];
+            for (int i = 0; i < 6; i++) {
+                tiles[row][i] = tiles[row][i + 1];
+            }
+            tiles[row][6] = extraTileTemp;
+        }
+        else{
+            throw new IllegalArgumentException("Direction invalide. Utilisez RIGHT ou LEFT.");
+        }
+    }
+
+    public void pushColumn(int colum, Direction direction) {
+        Tile extraTileTemp = getExtraTile();
+
+        if (direction == Direction.TOP) {
+            extraTile = tiles[6][colum];
+            for (int i = 6; i > 0; i--) {
+                tiles[i][colum] = tiles[i - 1][colum];
+            }
+            tiles[0][colum] = extraTileTemp;
+        } else if (direction == Direction.BOTTOM) {
+            extraTile = tiles[0][colum];
+            for (int i = 0; i < 6; i++) {
+                tiles[i][colum] = tiles[i + 1][colum];
+            }
+            tiles[6][colum] = extraTileTemp;
+
+        } else {
+            throw new IllegalArgumentException("Direction invalide. Utilisez TOP ou BOTTOM.");
+        }
+    }
+
     public Tile getTile(Position position){
         return tiles[position.getPositionX()][position.getPositionY()];
     }
@@ -59,4 +100,8 @@ public class Board {
     public Tile getExtraTile() {
         return extraTile;
     }
+    public void setExtraTile(Tile extraTile) {
+        this.extraTile=extraTile;
+    }
+
 }

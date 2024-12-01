@@ -5,8 +5,6 @@ import Model.*;
 public class Game {
     public static void main(String[] args){
         Board board = new Board();
-        Position positionJ1 = new Position(3,4);
-        Player player = new Player(1,positionJ1);
         for(int i=0; i<7; i++){
             for(int j=0; j<7; j++)
             {
@@ -17,20 +15,30 @@ public class Game {
 
         System.out.println("\n"+board.getExtraTile().affichage());
 
+
+        System.out.println("\nPousser de la ligne 0 avec la extraTile");
+        board.pushRow(2, Direction.LEFT);
+
         for(int i=0; i<7; i++){
             for(int j=0; j<7; j++)
             {
-                if(i==player.getPosition().getPositionX() && j==player.getPosition().getPositionY()){
-                    System.out.print(player.affichage());
-                }
-                else {
-                    System.out.print(board.getTile(new Position(i, j)).affichage());
-                }
+                System.out.print(board.getTile(new Position(i,j)).affichage());
             }
             System.out.print("\n");
         }
 
         System.out.println("\n"+board.getExtraTile().affichage());
+        System.out.println("\nPousser de la colonne 2 avec la extraTile");
+        board.pushColumn(6, Direction.BOTTOM);
 
+        for(int i=0; i<7; i++){
+            for(int j=0; j<7; j++)
+            {
+                System.out.print(board.getTile(new Position(i,j)).affichage());
+            }
+            System.out.print("\n");
+        }
+
+        System.out.println("\n"+board.getExtraTile().affichage());
     }
 }
