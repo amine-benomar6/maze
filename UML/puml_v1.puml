@@ -6,108 +6,120 @@ skinparam classFontStyle Bold
 hide enum methods
 hide interface attributes
 
-package Model
+package model
 {
     abstract Tile <<abstract>>
     {
         - isMovable : Boolean
-        - isBlockedRight : Boolean
-        - isBlockedLeft : Boolean
-        - isBlockedTop : Boolean
-        - isBlockedBottom : Boolean
-        + <<Create>>Tile(position : Position)
+        - isPassedRight : Boolean
+        - isPassedLeft : Boolean
+        - isPassedTop : Boolean
+        - isPassedBottom : Boolean
+        + <<Create>>Tile(position : Position, right : Boolean, left : Boolean, top : Boolean, bottom : Boolean)
         + getPosition() : position
+        + getMovable() : Boolean
         + getRight() : Boolean
         + getLeft() : Boolean
         + getTop() : Boolean
         + getBottom() : Boolean
-         {abstract} + rotate(sens : Integer)
-        {abstract} +getType(): TypeTile
+        + setPosition(position : Position)
+        + setRight(right : Boolean)
+        + setLeft(left : Boolean)
+        + setTop(top : Boolean)
+        + setBottom(bottom : Boolean)
+        {abstract} + rotate(sens : Integer)
+        {abstract} + getType() : TypeTile
     }
 
     class TileT extends Tile
     {
+        + <<Create>>TileT(position : Position, right : Boolean, left : Boolean, top : Boolean, bottom : Boolean)
         + rotate(sens : Integer)
-        +getType(): TypeTile
+        + getType() : TypeTile
     }
 
     class TileLine extends Tile
     {
+        + <<Create>>TileLine(position : Position, right : Boolean, left : Boolean, top : Boolean, bottom : Boolean)
         + rotate(sens : Integer)
-        +getType(): TypeTile
+        + getType() : TypeTile
     }
 
     class TileAngle extends Tile
     {
+        + <<Create>>TileAngle(position : Position, right : Boolean, left : Boolean, top : Boolean, bottom : Boolean)
         + rotate(sens : Integer)
-        +getType(): TypeTile
+        + getType() : TypeTile
     }
 
     class TileFactory
     {
-        +<<Create>>TileFactory()
-        +createTileAngle(): Tile
-        +createTileT(): Tile
-        +createTileLine(): Tile
+        + <<Create>>TileFactory()
+        + createTileAngle() : Tile
+        + createTileT() : Tile
+        + createTileLine() : Tile
     }
 
     enum Direction <<enum>>
     {
-         TOP
-         BOTTOM
-         LEFT
-         RIGHT
+        TOP
+        BOTTOM
+        LEFT
+        RIGHT
     }
 
     enum TypeTile <<enum>>
     {
-         T
-         ANGLE
-         LINE
+        T
+        ANGLE
+        LINE
     }
 
     class Board
     {
-        +<<Create>> Board()
-        +initializeBoard()
-        +pushRow(rowIndex : Integer, direction : Direction)
-        +pushColumn(colIndex : Integer, direction : Direction)
-        +getExtraTile() : Tile
+        + <<Create>> Board()
+        + addObserver(observer : BoardObserver)
+        + initializeBoard()
+        + pushRow(rowIndex : Integer, direction : Direction)
+        + pushColumn(colIndex : Integer, direction : Direction)
+        + getExtraTile() : Tile
+        + getTile(position : Position) : Tile
+        + notifyPush(index : Integer, direction : Direction)
     }
 
     class Objective
     {
         - nameObjective : String
-        + <<Create>>Objective(position : Position)
-        +getPosition() : Position
+        + <<Create>>Objective(position : Position, nameObjective : String)
+        + getPosition() : Position
+        + setPosition(position : Position)
     }
 
     class Player
     {
-        -numberReclaimedObjectives : Integer
-        -numberRemainingObjectives : Integer
-        +<<Create>>Player(position : Position, objectives : Objective[*])
-        +getPosition() : Position
-        +aWins() : Boolean
-        +move(direction : Direction) : boolean
+        - numberReclaimedObjectives : Integer
+        - numberRemainingObjectives : Integer
+        + <<Create>>Player(position : Position, objectives : Objective[*])
+        + addObserver(observer : PlayerObserver)
+        + getPosition() : Position
+        + getFirstPosition() : Position
+        + setPosition(position : Position)
+        + aWins() : Boolean
+        + reclaimedCurrentObjective() : Boolean
+        + move(direction : Direction) : Boolean
+        + notifyPlayer()
+        + notifyObjectif()
     }
 
     class Game
     {
-        +initializeGame()
-        +initialisatizePlayer()
-        +start()
-        +currentPlayer(player : Player)
-        +pushTile(tile : Tile, player: Player)
-        +movePlayer(player : Player)
-        +notifyMove(player : Player, position : Position)
-        +notifyPush()
-        +end()
-    }
-
-    interface GameObserver <<interface>>
-    {
-        +update(game: Game)
+        + <<Create>>Game()
+        + initializeGame()
+        + start()
+        + currentPlayer(player : Player)
+        + pushTile(player: Player)
+        + movePlayer(player : Player)
+        + end()
     }
 
     class Position
@@ -115,36 +127,52 @@ package Model
         + <<Create>> Position(positionX : Integer, positionY : Integer)
         - positionX : Integer
         - positionY : Integer
-        + getPositionX() : Integer
-        + getPositionY() : Integer
-        + setPositionX(position : Integer)
-        + setPositionY(position : Integer)
+        + getPosition() : Position
+        + getX() : Integer
+        + getY() : Integer
+        + setX(x : Integer)
+        + setY(y : Integer)
+        + equals(other : Position) : Boolean
+    }
+
+    class BoardObserver<<interface>>
+    {
+        + {abstract}updatePushTile(index : Integer, direction : Direction)
+        + {abstract}updateBoardState()
+    }
+
+    class PlayerObserver<<interface>>
+    {
+        + {abstract}updatePlayerPosition(position : Position, player: Player)
+        + {abstract}updateObjectiveState(player: Player, reclaimedObjectives : Integer, remainingObjectives : Integer)
     }
 }
 
 package View
 {
-    class MainScreen implements Model.GameObserver
+   class MainScreen implements model.BoardObserver, model.PlayerObserver
    {
-        +update(game: Game)
-        +displayBoard(board: Board)
-        +displayPlayerInfo(players: List<Player>)
-    }
-    class EndScreen implements Model.GameObserver
-    {
-        +displayWinner(player: Player)
-    }
+        + <<Create>> MainScreen(controller : GameController)
+        + updatePushTile(index : Integer, direction : Direction)
+        + updateBoardState()
+        + updatePlayerPosition(position : Position, player: Player)
+        + updateObjectiveState(player: Player, reclaimedObjectives : Integer, remainingObjectives : Integer)
+   }
+   class EndScreen implements model.BoardObserver, model.PlayerObserver
+   {
+        + displayWinner(player: Player)
+   }
 }
 
 package Controller
 {
     class GameController
     {
-        -game: Game
-        +rotateExtraTile(direction: String)
-        +pushRow(rowIndex: Integer, direction: Integer)
-        +pushColumn(colIndex: Integer, direction: Integer)
-        +movePlayer(player: Player, direction: Integer)
+        + <<Create>>GameController(game : Game)
+        + rotateExtraTile(sens : Integer)
+        + pushRow(rowIndex : Integer, direction : Direction)
+        + pushColumn(colIndex : Integer, direction : Direction)
+        + movePlayer(player : Player, direction : Direction)
     }
 }
 
@@ -163,26 +191,25 @@ Player ..> Direction : <<uses>>
 Game ..> Tile : <<uses>>
 
 Tile o--> "  1\n - position" Position
-Player o--> "  1\n - position" Position
-Objective o--> "  1\n - position" Position
+Player o--> "1\n- position" Position
+Player o--> "  1\n       - firstPosition" Position
+Objective o--> "1\n- position" Position
 
 
 Board ..> TileFactory : <<uses>>
 Game o--> "  1\n - board" Board
 Game *--> "  4\n - player"Player
-Game o--> "  *\n - observers" GameObserver
+Board o--> "  *\n - observers" BoardObserver
+Player o--> "  *\n - observers" PlayerObserver
 
-Player o--> "1\n- currentObjective" Objective
-Player o--> "0 .. *\n- objectives" Objective
+Player o-u-> "1\n- currentObjective" Objective
+Player o-u-> "0 .. *\n- objectives" Objective
 Board *--> "49 \n- tiles" Tile : > contains
 Board o--> "1\n- extraTile" Tile : > contains
 Board *--> "24\n- objectives" Objective
 Board o--> "4\n- pions" Player
 
 
-
-
-
-GameController ..> Game
+GameController o--> "1\n- game" Game
 
 @enduml
