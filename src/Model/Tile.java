@@ -1,5 +1,8 @@
 package Model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class Tile {
     private Position position;
     private boolean isMovable;
@@ -7,6 +10,8 @@ public abstract class Tile {
     private boolean isOpenRight;
     private boolean isOpenBottom;
     private boolean isOpenLeft;
+
+    private List<TileObserver> observers = new ArrayList<>();
 
     Tile(boolean isMovable, boolean isOpenTop, boolean isOpenRight, boolean isOpenBottom, boolean isOpenLeft){
         this.isMovable=isMovable;
@@ -51,6 +56,16 @@ public abstract class Tile {
     }
 
     public abstract void rotate(Direction direction);
+
+    public void addObserver(TileObserver tileObserver){
+        observers.add(tileObserver);
+    }
+
+    public void notifyRotate(Direction direction) {
+        for (TileObserver observer : observers) {
+            observer.updateRotate(direction, this);
+        }
+    }
 
     public abstract String affichage();
 }

@@ -18,24 +18,28 @@ public class TileLine extends Tile{
                 setOpenRight(true);
                 setOpenBottom(false);
                 setOpenLeft(true);
+                notifyRotate(Direction.TOP);
                 break;
             case RIGHT:
                 setOpenTop(true);
                 setOpenRight(false);
                 setOpenBottom(true);
                 setOpenLeft(false);
+                notifyRotate(Direction.RIGHT);
                 break;
             case BOTTOM:
                 setOpenTop(false);
                 setOpenRight(true);
                 setOpenBottom(false);
                 setOpenLeft(true);
+                notifyRotate(Direction.BOTTOM);
                 break;
             case LEFT:
                 setOpenTop(true);
                 setOpenRight(false);
                 setOpenBottom(true);
                 setOpenLeft(false);
+                notifyRotate(Direction.LEFT);
                 break;
         }
     }

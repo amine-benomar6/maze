@@ -6,8 +6,10 @@ import java.util.List;
 
 public class Board {
     private Tile[][] tiles; //Tableau 2D qui va représenter le plateau
-    private Tile extraTile; //Tuile restante
+
     private TileFactory tileFactory = new TileFactory(); //La factory des tuiles
+
+    private List<BoardObserver> observers = new ArrayList<>();
 
     /*
     * Constructeur de board
@@ -51,8 +53,6 @@ public class Board {
             totalIndex++;
         }
 
-
-        extraTile=tileFactory.createTileT(); //Tuile restante par défaut en T
     }
 
     /**
@@ -69,54 +69,42 @@ public class Board {
      * Pousser une ligne du plateau
      *
      * @param row ligne à pousser
-     * @param direction direction dans laquelle pousser la ligne
      */
-    public void pushRow(int row, Direction direction){
-        Tile extraTileTemp=getExtraTile();
-        if(direction==Direction.LEFT){
-            extraTile=tiles[row][6];
-            for(int i=6; i>0; i--){
-                tiles[row][i]=tiles[row][i-1];
-            }
-            tiles[row][0]=extraTileTemp;}
-        else if(direction==Direction.RIGHT){
-            extraTile = tiles[row][0];
-            for (int i = 0; i < 6; i++) {
-                tiles[row][i] = tiles[row][i + 1];
-            }
-            tiles[row][6] = extraTileTemp;
+    public void pushRowLeft(int row) {
+        for (int i = 6; i > 0; i--) {
+            tiles[row][i] = tiles[row][i - 1];
         }
-        else{
-            throw new IllegalArgumentException("Direction invalide. Utilisez RIGHT ou LEFT.");
+        notifyObserversUpdatePushRow(row, Direction.LEFT);
+    }
+
+    public void pushRowRight(int row){
+        for (int i = 0; i < 6; i++) {
+            tiles[row][i] = tiles[row][i + 1];
         }
+        notifyObserversUpdatePushRow(row, Direction.RIGHT);
+    }
+
+    public void pushColumnTop(int column){
+        for (int i = 6; i > 0; i--) {
+            tiles[i][column] = tiles[i - 1][column];
+        }
+        notifyObserversUpdatePushColumn(column, Direction.TOP);
+    }
+
+    public void pushColumnBottom(int column){
+        for (int i = 0; i < 6; i++) {
+            tiles[i][column] = tiles[i + 1][column];
+        }
+        notifyObserversUpdatePushColumn(column, Direction.BOTTOM);
     }
 
     /**
      * Pousser une colonne du plateau
      *
-     * @param colum colonne à pousser
+     * @param column colonne à pousser
      * @param direction direction pour pousser la colonne
      */
-    public void pushColumn(int colum, Direction direction) {
-        Tile extraTileTemp = getExtraTile();
 
-        if (direction == Direction.TOP) {
-            extraTile = tiles[6][colum];
-            for (int i = 6; i > 0; i--) {
-                tiles[i][colum] = tiles[i - 1][colum];
-            }
-            tiles[0][colum] = extraTileTemp;
-        } else if (direction == Direction.BOTTOM) {
-            extraTile = tiles[0][colum];
-            for (int i = 0; i < 6; i++) {
-                tiles[i][colum] = tiles[i + 1][colum];
-            }
-            tiles[6][colum] = extraTileTemp;
-
-        } else {
-            throw new IllegalArgumentException("Direction invalide. Utilisez TOP ou BOTTOM.");
-        }
-    }
 
     /**
      * Obtenir une tuile à une position donné
@@ -128,31 +116,25 @@ public class Board {
         return tiles[position.getPositionX()][position.getPositionY()];
     }
 
-    /**
-     * Obtenir la tuile restante
-     *
-     * @return extraTile tuile restante
-     */
-    public Tile getExtraTile() {
-        return extraTile;
+    public void setTileAt(Tile tile, Position position){
+        tiles[position.getPositionX()][position.getPositionY()]=tile;
     }
 
-    /**
-     * Permet de définir une nouvelle extraTile
-     *
-     * @param extraTile Tile qui va devenir la nouvelle extraTile
-     */
-    public void setExtraTile(Tile extraTile) {
-        this.extraTile=extraTile;
+
+    public void addObserver(BoardObserver observer) {
+        observers.add(observer);
     }
 
-    public boolean playerOnLine(int index, Player player){
-        for(int i=0; i<7; i++){
-            if(player.getTilePlayer()==tiles[index][i]){
-                return true;
-            }
+    public void notifyObserversUpdatePushRow(int index, Direction direction) {
+        for (BoardObserver observer : observers) {
+            observer.updatePushRow(index, direction);
         }
-        return false;
+    }
+
+    public void notifyObserversUpdatePushColumn(int index, Direction direction) {
+        for (BoardObserver observer : observers) {
+            observer.updatePushColumn(index, direction);
+        }
     }
 
 }
