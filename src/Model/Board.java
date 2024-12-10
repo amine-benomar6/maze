@@ -14,94 +14,114 @@ public class Board {
         initializeBoard();
     }
 
-    public void initializeBoard(){
-        int totalIndex = 0;
-
-        for(int i=0; i<20; i++){
-            int line = totalIndex / 7;
-            int colum = totalIndex % 7;
-            Position position=new Position(line,colum);
-            tiles[line][colum] = tileFactory.createTileAngle();
-            tiles[line][colum].setPosition(position);
-            totalIndex++;
+    public void initializeBoard()
+    {
+        int angle = 16;
+        int t = 12;
+        int droit = 17;
+        for(int line = 0; line < 7; line++)
+        {
+            for (int colum = 0; colum < 7; colum++)
+            {
+                Position position = new Position(line,colum);
+                if((line == 0 && (colum == 0 || colum == 6)) || (line == 6 && (colum == 0 || colum == 6)))
+                {
+                    tiles[line][colum] = tileFactory.createTileAngle(true);
+                }
+                else if(angle !=0 )
+                {
+                    tiles[line][colum] = tileFactory.createTileAngle(true);
+                    angle--;
+                }
+                else if(t != 0)
+                {
+                    tiles[line][colum] = tileFactory.createTileT(true);
+                    t--;
+                }
+                else if(droit != 0)
+                {
+                    tiles[line][colum] = tileFactory.createTileLine(true);
+                    droit--;
+                }
+                tiles[line][colum].setPosition(position);
+            }
         }
-
-        for(int i=0; i<12; i++) {
-            int line = totalIndex / 7;
-            int colum = totalIndex % 7;
-            Position position=new Position(line,colum);
-            tiles[line][colum] = tileFactory.createTileLine();
-            tiles[line][colum].setPosition(position);
-            totalIndex++;
-        }
-
-        for(int i=0; i<17; i++){
-            int line = totalIndex / 7;
-            int colum = totalIndex % 7;
-            Position position=new Position(line,colum);
-            tiles[line][colum] = tileFactory.createTileT();
-            tiles[line][colum].setPosition(position);
-            totalIndex++;
-        }
-
-
-        extraTile=tileFactory.createTileT();
+        this.extraTile = tileFactory.createTileT(true);
     }
 
     public Tile[][] getTiles() {
         return tiles;
     }
 
-    public void pushRow(int row, Direction direction){
+    public void pushRow(int row, Direction direction)
+    {
         Tile extraTileTemp=getExtraTile();
-        if(direction==Direction.LEFT){
+        if(direction==Direction.LEFT)
+        {
             extraTile=tiles[row][6];
-            for(int i=6; i>0; i--){
+            for(int i=6; i>0; i--)
+            {
                 tiles[row][i]=tiles[row][i-1];
             }
-            tiles[row][0]=extraTileTemp;}
-        else if(direction==Direction.RIGHT){
+            tiles[row][0] = extraTileTemp;
+        }
+        else if(direction==Direction.RIGHT)
+        {
             extraTile = tiles[row][0];
-            for (int i = 0; i < 6; i++) {
+            for (int i = 0; i < 6; i++)
+            {
                 tiles[row][i] = tiles[row][i + 1];
             }
             tiles[row][6] = extraTileTemp;
         }
-        else{
+        else
+        {
             throw new IllegalArgumentException("Direction invalide. Utilisez RIGHT ou LEFT.");
         }
     }
 
-    public void pushColumn(int colum, Direction direction) {
+    public void pushColumn(int colum, Direction direction)
+    {
         Tile extraTileTemp = getExtraTile();
 
-        if (direction == Direction.TOP) {
+        if (direction == Direction.TOP)
+        {
             extraTile = tiles[6][colum];
-            for (int i = 6; i > 0; i--) {
+            for (int i = 6; i > 0; i--)
+            {
                 tiles[i][colum] = tiles[i - 1][colum];
             }
             tiles[0][colum] = extraTileTemp;
-        } else if (direction == Direction.BOTTOM) {
+        }
+        else if (direction == Direction.BOTTOM)
+        {
             extraTile = tiles[0][colum];
-            for (int i = 0; i < 6; i++) {
+            for (int i = 0; i < 6; i++)
+            {
                 tiles[i][colum] = tiles[i + 1][colum];
             }
             tiles[6][colum] = extraTileTemp;
 
-        } else {
+        }
+        else
+        {
             throw new IllegalArgumentException("Direction invalide. Utilisez TOP ou BOTTOM.");
         }
     }
 
-    public Tile getTile(Position position){
+    public Tile getTile(Position position)
+    {
         return tiles[position.getPositionX()][position.getPositionY()];
     }
 
-    public Tile getExtraTile() {
+    public Tile getExtraTile()
+    {
         return extraTile;
     }
-    public void setExtraTile(Tile extraTile) {
-        this.extraTile=extraTile;
+
+    public void setExtraTile(Tile extraTile)
+    {
+        this.extraTile = extraTile;
     }
 
 }
