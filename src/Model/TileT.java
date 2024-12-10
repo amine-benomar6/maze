@@ -18,24 +18,28 @@ public class TileT extends Tile{
                 setOpenRight(true);
                 setOpenBottom(true);
                 setOpenLeft(true);
+                notifyRotate(Direction.TOP);
                 break;
             case RIGHT:
                 setOpenTop(true);
                 setOpenRight(false);
                 setOpenBottom(true);
                 setOpenLeft(true);
+                notifyRotate(Direction.RIGHT);
                 break;
             case BOTTOM:
                 setOpenTop(true);
                 setOpenRight(true);
                 setOpenBottom(false);
                 setOpenLeft(true);
+                notifyRotate(Direction.BOTTOM);
                 break;
             case LEFT:
                 setOpenTop(true);
                 setOpenRight(true);
                 setOpenBottom(true);
                 setOpenLeft(false);
+                notifyRotate(Direction.LEFT);
                 break;
         }
     }
