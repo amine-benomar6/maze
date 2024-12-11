@@ -5,12 +5,14 @@ import View.BoardTextManager;
 import View.GameDisplay;
 import View.PlayerTextManager;
 import View.TileTextManager;
+import View.Display;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class LabyrintheApp {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Board board = new Board();
 
         Player player = new Player(new Position(0, 0), board);
@@ -36,11 +38,8 @@ public class LabyrintheApp {
         BoardTextManager boardTextManager = new BoardTextManager();
         board.addObserver(boardTextManager);
 
-        gameDisplay.Display();
 
-        game.pushColumn(4, Direction.BOTTOM);
-
-        gameDisplay.Display();
+        Display ecran = new Display(new GameController(game), board);
 
 
     }

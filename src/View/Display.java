@@ -1,4 +1,4 @@
-package view;
+package View;
 
 import Controller.GameController;
 import Model.Board;
@@ -78,9 +78,9 @@ public class Display extends JFrame
     {
         return switch (tile.getType())
         {
-            case T -> "C:/Users/amine/OneDrive/Documents/BUT/Semestre 3/a31-labyrinthe/img/tuileT.jpg";
-            case ANGLE -> "C:/Users/amine/OneDrive/Documents/BUT/Semestre 3/a31-labyrinthe/img/tuileAngle.jpg";
-            case LINE ->  "C:/Users/amine/OneDrive/Documents/BUT/Semestre 3/a31-labyrinthe/img/tuileDroit.jpg";
+            case T -> "img/tuileT.jpg";
+            case ANGLE -> "img/tuileAngle.jpg";
+            case LINE ->  "img/tuileDroit.jpg";
         };
     }
 }
