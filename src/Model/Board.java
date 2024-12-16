@@ -1,5 +1,6 @@
 package Model;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Board {
@@ -19,34 +20,23 @@ public class Board {
 
     public void initializeBoard()
     {
-        int angle = 16;
-        int t = 12;
-        int droit = 17;
+        List<Tile> shuffledTiles=shuffleTiles();
+        tiles[0][0] = tileFactory.createTileAngle(false);
+        tiles[0][6] = tileFactory.createTileAngle(false);
+        tiles[6][0] = tileFactory.createTileAngle(false);
+        tiles[6][6] = tileFactory.createTileAngle(false);
+
         for (int line = 0; line < 7; line++)
         {
             for (int colum = 0; colum < 7; colum++)
             {
-                Position position = new Position(line, colum);
-                if ((line == 0 && (colum == 0 || colum == 6)) || (line == 6 && (colum == 0 || colum == 6)))
-                {
-                    tiles[line][colum] = tileFactory.createTileAngle(true);
+                if ((line == 0 && (colum == 0 || colum == 6)) || (line == 6 && (colum == 0 || colum == 6))) {
+                    continue;
                 }
-                else if (angle != 0)
-                {
-                    tiles[line][colum] = tileFactory.createTileAngle(true);
-                    angle--;
-                }
-                else if (t != 0)
-                {
-                    tiles[line][colum] = tileFactory.createTileT(true);
-                    t--;
-                }
-                else if (droit != 0)
-                {
-                    tiles[line][colum] = tileFactory.createTileLine(true);
-                    droit--;
-                }
-                tiles[line][colum].setPosition(position);
+
+                Tile tile = shuffledTiles.remove(0);
+                tile.setPosition(new Position(line, colum));
+                tiles[line][colum] = tile;
             }
         }
     }
@@ -58,6 +48,30 @@ public class Board {
      */
     public Tile[][] getTiles() {
         return tiles;
+    }
+
+    public List<Tile> shuffleTiles(){
+        List<Tile> shuffledTiles=new ArrayList<>();
+        int angle = 16;
+        int t = 12;
+        int droit = 17;
+        for(int i=0; i<45; i++){
+            if(angle!=0){
+                shuffledTiles.add(tileFactory.createTileAngle(true));
+                angle--;
+            }
+            else if(t!=0){
+                shuffledTiles.add(tileFactory.createTileT(true));
+                t--;
+            }
+            else if(droit!=0){
+                shuffledTiles.add(tileFactory.createTileLine(true));
+                droit--;
+            }
+
+        }
+        Collections.shuffle(shuffledTiles);
+        return shuffledTiles;
     }
 
 

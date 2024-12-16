@@ -1,15 +1,18 @@
 package Model;
 
-import java.util.List;
+import java.util.*;
 
 public class Game {
     private Board board;
     private List<Player> players;
     private Tile extraTile;
+
+    private List<Objective> objectives;
     public Game(Board board, List<Player> players, Tile extraTile){
         this.board=board;
         this.players=players;
         this.extraTile=extraTile;
+        this.objectives=new ArrayList<>();
     }
 
     public void movePlayer(Player player, Direction direction){
@@ -64,18 +67,76 @@ public class Game {
         }
     }
 
+    public void initObjectives(){
+        for(int i=0; i<24; i++){
+            Objective obj=new Objective("obj"+i);
+            objectives.add(obj);
+        }
+
+        Collections.shuffle(objectives);
+
+        Random rand = new Random();
+        for (Objective obj : objectives)
+        {
+            int line = rand.nextInt(7);
+            int column = rand.nextInt(7);
+            Position posObj=new Position(line,column);
+            obj.setPositionObjective(posObj);
+        }
+    }
+
+    /*
+    public void dealObjectivesToPlayer(){
+        for (Player p:players)
+        {
+            for(int i=0; i<6; i++){
+                p.pushObjectivePlayer(objectives.get(0));
+            }
+        }
+    }
+*/
+    public List<Objective> getObjectives(){
+        return objectives;
+    }
+
     public Tile getExtraTile() {
         return extraTile;
     }
 
-    public boolean playerOnRow(int index, Player player){
+    public List<Player> getPlayersOnRow(int index){
+        System.out.println("Appel de playersOnRow pour la ligne " + index);
+        List<Player> playersOnRow= new ArrayList<>();
         for(int i=0; i<7; i++){
             Position newPosition = new Position(index, i);
-            if(player.getTilePlayer()== board.getTile(newPosition)){
-                return true;
+
+            for (Player p:players) {
+                if(p.getPosition().getPositionX()==newPosition.getPositionX() &&
+                        p.getPosition().getPositionY() == newPosition.getPositionY()){
+                    System.out.println("Joueur trouvé à la position :" + newPosition);
+                    playersOnRow.add(p);
+                }
             }
+
         }
-        return false;
+        return playersOnRow;
+    }
+
+    public List<Player> getPlayersOnColumn(int index) {
+        System.out.println("Appel de playersOnColumn pour la ligne " + index);
+        List<Player> playersOnColumn = new ArrayList<>();
+        for (int i = 0; i < 7; i++) {
+            Position newPosition = new Position(i, index);
+
+            for (Player p : players) {
+                if (p.getPosition().getPositionX() == newPosition.getPositionX() &&
+                        p.getPosition().getPositionY() == newPosition.getPositionY()) {
+                    System.out.println("Joueur trouvé à la position :" + newPosition);
+                    playersOnColumn.add(p);
+                }
+            }
+
+        }
+        return playersOnColumn;
     }
 
     /**
@@ -92,12 +153,35 @@ public class Game {
             extraTile = board.getTile(new Position(row,6));
             board.pushRowLeft(row);
             board.setTileAt(tempExtraTile, new Position(row,0));
+            List<Player> playersRow=getPlayersOnRow(row);
+            if(playersRow!=null){
+                for (Player p:playersRow)
+                {
+
+                    if (p.getPosition().getPositionY() == 6) {
+                        p.setPosition(new Position(row, 0));
+                    } else {
+                        p.setPosition(new Position(row, p.getPosition().getPositionY() + 1));
+                    }
+                }
+            }
         }
         else if (direction == Direction.RIGHT)
         {
             extraTile= board.getTile(new Position(row,0));
             board.pushRowRight(row);
             board.setTileAt(tempExtraTile, new Position(row,6));
+            List<Player> playersRow=getPlayersOnRow(row);
+            if(playersRow!=null){
+                for (Player p:playersRow)
+                {
+                    if (p.getPosition().getPositionY() == 0) {
+                        p.setPosition(new Position(row, 6));
+                    } else {
+                        p.setPosition(new Position(row, p.getPosition().getPositionY() - 1));
+                    }
+                }
+            }
         }
         else
         {
@@ -111,11 +195,33 @@ public class Game {
             extraTile = board.getTile(new Position(6, column));
             board.pushColumnTop(column);
             board.setTileAt(tempExtraTile, new Position(0, column));
+            List<Player> playersColumn=getPlayersOnColumn(column);
+            if(playersColumn!=null){
+                for (Player p:playersColumn)
+                {
+                    if (p.getPosition().getPositionX() == 6) {
+                        p.setPosition(new Position(0, column));
+                    } else {
+                        p.setPosition(new Position(p.getPosition().getPositionX() + 1, column));
+                    }
+                }
+            }
         }
         else if(direction==Direction.BOTTOM){
             extraTile = board.getTile(new Position(0, column));
             board.pushColumnBottom(column);
             board.setTileAt(tempExtraTile, new Position(6, column));
+            List<Player> playersColumn=getPlayersOnColumn(column);
+            if(playersColumn!=null){
+                for (Player p:playersColumn)
+                {
+                    if (p.getPosition().getPositionX() == 0) {
+                        p.setPosition(new Position(6, column));
+                    } else {
+                        p.setPosition(new Position(p.getPosition().getPositionX() - 1, column));
+                    }
+                }
+            }
         }
         else{
             throw new IllegalArgumentException("Direction invalide. Utilisez TOP ou BOTTOM.");

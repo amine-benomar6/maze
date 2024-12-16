@@ -15,7 +15,7 @@ public class LabyrintheApp {
     public static void main(String[] args) throws IOException {
         Board board = new Board();
 
-        Player player = new Player(new Position(0, 0), board);
+        Player player = new Player(new Position(3, 0), board);
         List<Player> players = new ArrayList<>();
         players.add(player);
 
@@ -39,7 +39,15 @@ public class LabyrintheApp {
         board.addObserver(boardTextManager);
 
 
-        Display ecran = new Display(new GameController(game), board);
+        Display ecran = new Display(new GameController(game), game);
+
+        gameDisplay.Display();
+
+        game.pushRow(3, Direction.RIGHT);
+
+        gameDisplay.Display();
+
+
 
 
     }

@@ -9,12 +9,13 @@ public class GameController {
         this.game=game;
     }
 
-    public void movePlayerUp(){
-        game.movePlayer(game.getPlayers().get(0), Direction.TOP);
+    public void movePlayer(Direction direction){
+        game.movePlayer(game.getPlayers().get(0), direction);
     }
 
-    public void movePlayerBottom(){
-        game.movePlayer(game.getPlayers().get(0), Direction.BOTTOM);
+    public void rotateExtraTile(){
+        System.out.println("ez");
+        game.getExtraTile().rotate(Direction.RIGHT);
     }
 
 }
