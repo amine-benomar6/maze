@@ -152,7 +152,8 @@ public class Game {
         {
             extraTile = board.getTile(new Position(row,6));
             board.pushRowLeft(row);
-            board.setTileAt(tempExtraTile, new Position(row,0));
+            tempExtraTile.setPosition(new Position(row,0));
+            board.setTileAt(tempExtraTile);
             List<Player> playersRow=getPlayersOnRow(row);
             if(playersRow!=null){
                 for (Player p:playersRow)
@@ -170,7 +171,8 @@ public class Game {
         {
             extraTile= board.getTile(new Position(row,0));
             board.pushRowRight(row);
-            board.setTileAt(tempExtraTile, new Position(row,6));
+            tempExtraTile.setPosition(new Position(row,6));
+            board.setTileAt(tempExtraTile);
             List<Player> playersRow=getPlayersOnRow(row);
             if(playersRow!=null){
                 for (Player p:playersRow)
@@ -194,7 +196,8 @@ public class Game {
         if(direction==Direction.TOP) {
             extraTile = board.getTile(new Position(6, column));
             board.pushColumnTop(column);
-            board.setTileAt(tempExtraTile, new Position(0, column));
+            tempExtraTile.setPosition(new Position(0, column));
+            board.setTileAt(tempExtraTile);
             List<Player> playersColumn=getPlayersOnColumn(column);
             if(playersColumn!=null){
                 for (Player p:playersColumn)
@@ -210,7 +213,8 @@ public class Game {
         else if(direction==Direction.BOTTOM){
             extraTile = board.getTile(new Position(0, column));
             board.pushColumnBottom(column);
-            board.setTileAt(tempExtraTile, new Position(6, column));
+            tempExtraTile.setPosition(new Position(6, column));
+            board.setTileAt(tempExtraTile);
             List<Player> playersColumn=getPlayersOnColumn(column);
             if(playersColumn!=null){
                 for (Player p:playersColumn)

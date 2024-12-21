@@ -11,8 +11,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LabyrintheApp {
-    public static void main(String[] args) throws IOException {
+public class LabyrintheApp
+{
+    public static void main(String[] args) throws IOException
+    {
         Board board = new Board();
 
         Player player = new Player(new Position(3, 0), board);
@@ -26,8 +28,10 @@ public class LabyrintheApp {
         GameDisplay gameDisplay = new GameDisplay(game);
 
         TileTextManager tileTextManager = new TileTextManager();
-        for (Tile[] row : board.getTiles()) {
-            for (Tile tile : row) {
+        for (Tile[] row : board.getTiles())
+        {
+            for (Tile tile : row)
+            {
                 tile.addObserver(tileTextManager);
             }
         }
@@ -41,16 +45,7 @@ public class LabyrintheApp {
 
         Display ecran = new Display(new GameController(game), game);
 
-        gameDisplay.Display();
-
-        game.pushRow(3, Direction.RIGHT);
 
         gameDisplay.Display();
-
-
-
-
     }
-
-
 }

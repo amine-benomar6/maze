@@ -3,7 +3,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Board {
+public class Board
+{
     private Tile[][] tiles; //Tableau 2D qui va représenter le plateau
 
     private TileFactory tileFactory = new TileFactory(); //La factory des tuiles
@@ -111,6 +112,7 @@ public class Board {
         for (int i = 6; i > 0; i--)
         {
             tiles[row][i] = tiles[row][i - 1];
+            tiles[row][i].setPosition(new Position(row, i - 1));
         }
         notifyObserversUpdatePushRow(row, Direction.LEFT);
     }
@@ -154,6 +156,7 @@ public class Board {
         for (int i = 0; i < 6; i++)
         {
             tiles[row][i] = tiles[row][i + 1];
+            tiles[row][i].setPosition(new Position(row, i));
         }
         notifyObserversUpdatePushRow(row, Direction.RIGHT);
     }
@@ -168,6 +171,7 @@ public class Board {
         for (int i = 6; i > 0; i--)
         {
             tiles[i][column] = tiles[i - 1][column];
+            tiles[i][column].setPosition(new Position(i , column));
         }
         notifyObserversUpdatePushColumn(column, Direction.TOP);
     }
@@ -177,15 +181,16 @@ public class Board {
         for (int i = 0; i < 6; i++)
         {
             tiles[i][column] = tiles[i + 1][column];
+            tiles[i][column].setPosition(new Position(i , column));
         }
         notifyObserversUpdatePushColumn(column, Direction.BOTTOM);
     }
 
 
 
-    public void setTileAt(Tile tile, Position position)
+    public void setTileAt(Tile tile)
     {
-        tiles[position.getPositionX()][position.getPositionY()]=tile;
+        tiles[tile.getPosition().getPositionX()][tile.getPosition().getPositionY()]=tile;
     }
 
 
