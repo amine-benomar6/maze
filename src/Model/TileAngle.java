@@ -5,15 +5,23 @@ import java.util.List;
 
 public class TileAngle extends Tile{
     private List<BoardObserver> observers = new ArrayList<>();
-    public TileAngle(boolean isMovable){
-        super(isMovable, true, true,false,false); //La forme d'un L
+    public TileAngle(){
+        super(true, true,false,false); //La forme d'un L
     }
 
+    /**
+     * Retourne le type de tuile
+     * @return type de tuile
+     */
     @Override
     public TypeTile getType(){
         return TypeTile.ANGLE;
     }
 
+    /**
+     * Tourne la tuile dans une direction
+     * @param direction nouvelle direction de la tuile
+     */
     @Override
     public void rotate(Direction direction){
         switch (direction){
@@ -49,8 +57,12 @@ public class TileAngle extends Tile{
 
     }
 
+    /**
+     * Affiche la tuile dans la console
+     * @return tuile sous forme console
+     */
     @Override
-    public String affichage(){
+    public String output(){
         String affichage="[L";
         if(getIsOpenTop()){affichage+="O";}
         else{affichage+="X";}

@@ -18,9 +18,17 @@ public class Display extends JFrame {
     private JPanel leftPanel;
     private JPanel centerPanel;
     private JLabel extraTileLabel;
+    private JLabel currentPlayerImage;
     private BufferedImage originalImage;
     private BufferedImage rotatedImage;
     private double rotationAngle = 0;
+
+    String[] playerImagePaths = {
+            "img/RondRouge.png",   // Joueur 1
+            "img/RondBleu.png",    // Joueur 2
+            "img/RondVert.png",    // Joueur 3
+            "img/RondJaune.png"    // Joueur 4
+    };
 
     public Display(GameController gameController, Game game) throws IOException {
         super("Labyrinthe");
@@ -33,13 +41,28 @@ public class Display extends JFrame {
 
         panel = new JPanel(new GridLayout(7, 7, 2, 2));
         centerPanel.setPreferredSize(new Dimension(200,200));
-        initializeBoard(game.getBoard().getTiles(), game.getPlayers());
+        initializeBoard(gameController.getBoardTiles(), game.getPlayers());
 
         addPushButtons(gameController, game);
 
         centerPanel.add(panel, BorderLayout.CENTER);
 
         leftPanel = new JPanel(new GridBagLayout());
+        leftPanel.setPreferredSize(new Dimension(500, getHeight()));
+
+        // Ajouter l'affichage du joueur actuel
+        String playerImagePath = playerImagePaths[game.getPlayers().indexOf(game.getCurrentPlayer()) % playerImagePaths.length];
+        BufferedImage playerImage = ImageIO.read(new File(playerImagePath));
+        currentPlayerImage = new JLabel(new ImageIcon(playerImage));
+        JButton endTurnButton = new JButton("Fin du tour");
+        endTurnButton.addActionListener(e -> {
+            gameController.endOfRound(); // Passer au joueur suivant
+            try {
+                updateCurrentPlayerDisplay(game); // Mettre à jour l'affichage
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
 
         originalImage = ImageIO.read(new File(pathImgOfTile(game.getExtraTile())));
         rotatedImage = originalImage; // Initialiser avec l'image originale
@@ -94,6 +117,13 @@ public class Display extends JFrame {
         gbc.gridx = 1;
         leftPanel.add(bottom, gbc);
 
+        gbc.gridx = 0;
+        gbc.gridy = 6;
+        leftPanel.add(currentPlayerImage, gbc);
+
+        gbc.gridx = 1;
+        leftPanel.add(endTurnButton, gbc);
+
 
         jp2.add(leftPanel,BorderLayout.WEST);
         jp2.add(centerPanel, BorderLayout.CENTER);
@@ -103,6 +133,13 @@ public class Display extends JFrame {
         setVisible(true);
 
 
+    }
+
+    private void updateCurrentPlayerDisplay(Game game) throws IOException {
+        int currentPlayerIndex = game.getPlayers().indexOf(game.getCurrentPlayer());
+        BufferedImage playerImage = ImageIO.read(new File(playerImagePaths[currentPlayerIndex]));
+        ImageIcon playerIcon = new ImageIcon(playerImage.getScaledInstance(50, 50, Image.SCALE_SMOOTH));
+        currentPlayerImage.setIcon(playerIcon);
     }
 
     public void initializeBoard(Tile[][] tiles, List<Player> players) throws IOException {
@@ -120,9 +157,10 @@ public class Display extends JFrame {
                 label.setLayout(new OverlayLayout(label));
                 panel.add(label);
 
-                for (Player player : players) {
+                for (int p=0; p< players.size();p++) {
+                    Player player = players.get(p);
                     if (player.getPosition().getPositionX() == i && player.getPosition().getPositionY() == j) {
-                        String playerImagePath = "img/RondRouge.png";
+                        String playerImagePath = playerImagePaths[p % playerImagePaths.length];
                         BufferedImage playerImage = ImageIO.read(new File(playerImagePath));
                         ImageIcon playerIcon = new ImageIcon(playerImage);
 

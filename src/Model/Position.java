@@ -8,10 +8,18 @@ public class Position {
         this.positionY=positionY;
     }
 
+    /**
+     * Retourne la positionX
+     * @return positionX
+     */
     public int getPositionX() {
         return positionX;
     }
 
+    /**
+     * Retourne la positionY
+     * @return positionY
+     */
     public int getPositionY() {
         return positionY;
     }
@@ -24,6 +32,10 @@ public class Position {
         this.positionY = positionY;
     }
 
+    /**
+     * Pour les affichages
+     * @return la positon dans un meilleur affichage
+     */
     @Override
     public String toString() {
         return "(" + positionX + ", " + positionY + ")";
