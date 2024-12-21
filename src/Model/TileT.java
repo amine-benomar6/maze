@@ -1,15 +1,24 @@
 package Model;
 
 public class TileT extends Tile{
-    public TileT(boolean isMovable){
-        super(isMovable, false,true,true,true);
+    public TileT(){
+        super(false,true,true,true);
     }
+
+    /**
+     * Retourne le type de tuile
+     * @return type de tuile
+     */
 
     @Override
     public TypeTile getType(){
         return TypeTile.T;
     }
 
+    /**
+     * Tourne la tuile dans une direction
+     * @param direction nouvelle direction de la tuile
+     */
     @Override
     public void rotate(Direction direction){
         switch (direction){
@@ -44,8 +53,13 @@ public class TileT extends Tile{
         }
     }
 
+    /**
+     * Affiche la tuile dans la console
+     * @return tuile sous forme console
+     */
+
     @Override
-    public String affichage(){
+    public String output(){
         String affichage="[T";
         if(getIsOpenTop()){affichage+="O";}
         else{affichage+="X";}

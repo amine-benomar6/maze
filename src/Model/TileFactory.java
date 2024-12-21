@@ -2,15 +2,28 @@ package Model;
 
 public class TileFactory {
     public TileFactory(){}
-    public Tile createTileAngle(boolean isMovable){
-        return new TileAngle(isMovable);
+
+    /**
+     * Créer une tuile en forme d'angle
+     * @return la tuile créé
+     */
+    public Tile createTileAngle(){
+        return new TileAngle();
     }
 
-    public Tile createTileLine(boolean isMovable){
-        return new TileLine(isMovable);
+    /**
+     * Créer une tuile en forme de ligne
+     * @return la tuile créé
+     */
+    public Tile createTileLine(){
+        return new TileLine();
     }
 
-    public Tile createTileT(boolean isMovable){
-        return new TileT(isMovable);
+    /**
+     * Créer une tuile en forme de T
+     * @return la tuile créé
+     */
+    public Tile createTileT(){
+        return new TileT();
     }
 }

@@ -9,6 +9,10 @@ public class GameDisplay {
     public GameDisplay(Game game){
         this.game=game;
     }
+
+    /**
+     * Affiche le jeu complet
+     */
     public void Display(){
         for(int i=0; i<7; i++){
             for(int j=0; j<7; j++)
@@ -16,16 +20,16 @@ public class GameDisplay {
                 for (Player player: game.getPlayers())
                 {
                     if(player.getPosition().getPositionX() == i && player.getPosition().getPositionY() == j){
-                        System.out.print(player.affichage());
+                        System.out.print(player.output());
                     }
                 }
 
-                System.out.print(game.getBoard().getTile(new Position(i,j)).affichage());
+                System.out.print(game.getBoard().getTile(new Position(i,j)).output());
             }
             System.out.print("\n");
         }
 
-        System.out.println("\n"+game.getExtraTile().affichage());
+        System.out.println("\n"+game.getExtraTile().output());
     }
 
 }

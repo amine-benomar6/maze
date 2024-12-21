@@ -1,15 +1,24 @@
 package Model;
 
 public class TileLine extends Tile{
-    public TileLine(boolean isMovable){
-        super(isMovable,false,true,false,true);
+    public TileLine(){
+        super(false,true,false,true);
     }
+
+    /**
+     * Retourne le type de tuile
+     * @return type de tuile
+     */
 
     @Override
     public TypeTile getType(){
         return TypeTile.LINE;
     }
 
+    /**
+     * Tourne la tuile dans une direction
+     * @param direction nouvelle direction de la tuile
+     */
     @Override
     public void rotate(Direction direction){
         switch (direction){
@@ -44,8 +53,12 @@ public class TileLine extends Tile{
         }
     }
 
+    /**
+     * Affiche la tuile dans la console
+     * @return tuile sous forme console
+     */
     @Override
-    public String affichage(){
+    public String output(){
         String affichage="[-";
         if(getIsOpenTop()){affichage+="O";}
         else{affichage+="X";}

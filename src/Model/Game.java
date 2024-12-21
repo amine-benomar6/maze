@@ -5,16 +5,40 @@ import java.util.*;
 public class Game {
     private Board board;
     private List<Player> players;
+    private Player currentPlayer;
     private Tile extraTile;
 
     private List<Objective> objectives;
     public Game(Board board, List<Player> players, Tile extraTile){
         this.board=board;
         this.players=players;
+        currentPlayer=players.get(0);
         this.extraTile=extraTile;
         this.objectives=new ArrayList<>();
     }
 
+    /**
+     * Change le joueur actuel (currentPlayer)
+     */
+    public void switchCurrentPlayer(){
+        int currentIndex = players.indexOf(currentPlayer);
+        int nextIndex = (currentIndex + 1) % players.size();
+        currentPlayer = players.get(nextIndex);
+    }
+
+    /**
+     * Obtenir le joueur actuel
+     * @return le joueur actuel
+     */
+    public Player getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    /**
+     * Bouge le joueur en parametre dans une direction
+     * @param player joueur à bouger
+     * @param direction direction dans laquelle il va bouger
+     */
     public void movePlayer(Player player, Direction direction){
         Position positionPlayer=player.getPosition();
 
@@ -67,6 +91,9 @@ public class Game {
         }
     }
 
+    /**
+     * Initialisation des objectifs (pas super developpé)
+     */
     public void initObjectives(){
         for(int i=0; i<24; i++){
             Objective obj=new Objective("obj"+i);
@@ -85,6 +112,10 @@ public class Game {
         }
     }
 
+    /**
+     * Fonction qui aurait du servir pour distribuer les objectifs
+     * @return
+     */
     /*
     public void dealObjectivesToPlayer(){
         for (Player p:players)
@@ -95,15 +126,32 @@ public class Game {
         }
     }
 */
+
+    /**
+     * Retourne les objectifs
+     * @return tout les objectifs
+     */
     public List<Objective> getObjectives(){
         return objectives;
     }
 
+    /**
+     * Retourne l'ectra tuile
+     * @return extra tuile
+     */
     public Tile getExtraTile() {
         return extraTile;
     }
 
+    /**
+     * Retourne tout les joueurs sur une ligne donné
+     * @param index index de la ligne souhaité
+     * @return les joueurs sur la ligne
+     */
     public List<Player> getPlayersOnRow(int index){
+        if (index<0 || index>6) {
+            throw new IllegalArgumentException("Index de la ligne invalide. Sélectionnez un index entre 0 et 6 inclus.");
+        }
         System.out.println("Appel de playersOnRow pour la ligne " + index);
         List<Player> playersOnRow= new ArrayList<>();
         for(int i=0; i<7; i++){
@@ -121,7 +169,15 @@ public class Game {
         return playersOnRow;
     }
 
+    /**
+     * Retourne tout les joueurs sur une colonne donné
+     * @param index index de la colonne souhaité
+     * @return les joueurs sur la colonne
+     */
     public List<Player> getPlayersOnColumn(int index) {
+        if (index<0 || index>6) {
+            throw new IllegalArgumentException("Index de la colonne invalide. Sélectionnez un index entre 0 et 6 inclus.");
+        }
         System.out.println("Appel de playersOnColumn pour la ligne " + index);
         List<Player> playersOnColumn = new ArrayList<>();
         for (int i = 0; i < 7; i++) {
@@ -185,12 +241,20 @@ public class Game {
                 }
             }
         }
-        else
-        {
-            throw new IllegalArgumentException("Direction invalide. Utilisez RIGHT ou LEFT.");
+        else if (direction!=Direction.RIGHT || direction!=Direction.LEFT) {
+            throw new IllegalArgumentException("Direction invalide. Utilisez LEFT ou RIGHT.");
+        }
+        else if (row<0 || row>6) {
+            throw new IllegalArgumentException("Index de la ligne invalide. Sélectionnez un index entre 0 et 6 inclus.");
         }
     }
 
+    /**
+     * Pousser une colonne du plateau
+     *
+     * @param column colonne à pousser
+     * @param direction direction dans laquelle pousser la colonne
+     */
     public void pushColumn(int column, Direction direction){
         Tile tempExtraTile=extraTile;
         if(direction==Direction.TOP) {
@@ -226,10 +290,13 @@ public class Game {
                     }
                 }
             }
-        }
-        else{
+        } else if (direction!=Direction.TOP || direction!=Direction.BOTTOM) {
             throw new IllegalArgumentException("Direction invalide. Utilisez TOP ou BOTTOM.");
         }
+        else if (column<0 || column>6) {
+            throw new IllegalArgumentException("Index de la colonne invalide. Sélectionnez un index entre 0 et 6 inclus.");
+        }
+
     }
 
     public List<Player> getPlayers(){
