@@ -1,55 +1,89 @@
-# Projet Labyrinthe
+# Rapport sur l'architecture du jeu "Labyrinthe"
 
-## Description générale
+## Introduction
 
-Le projet **Labyrinthe** est un jeu de puzzle où les joueurs doivent naviguer à travers un labyrinthe en déplaçant des tuiles et en accomplissant des objectifs. Le jeu suit un modèle basé sur des classes représentant des éléments du jeu tels que les tuiles, le plateau, les joueurs, et les objectifs.
+Le projet "Labyrinthe" est un jeu basé sur une grille de tuiles. Le but du jeu est d'aider un ou plusieurs joueurs à atteindre leurs objectifs en manipulant des tuiles et en déplaçant des pions sur un plateau de jeu. Ce rapport décrit l'architecture du projet basée sur le diagramme UML fourni, en détaillant les principaux composants du système, leurs interactions et leurs responsabilités.
 
-## Classes principales
+## Composants Principaux
 
-### 1. **Classe `Tile` (Tuile)**
-Cette classe représente une tuile du plateau. Elle contient des informations concernant sa capacité à être déplacée et si elle a déjà été traversée dans une direction spécifique. Les méthodes de cette classe permettent de manipuler sa position et de vérifier les directions dans lesquelles elle peut être déplacée. De plus, chaque type de tuile a des comportements de rotation spécifiques, définis dans les classes filles.
+### 1. Modèle (Model)
 
-### 2. **Classe `TileT`, `TileLine`, `TileAngle`**
-Ces classes représentent des variantes de tuiles avec des formes spécifiques (T, ligne, angle). Chaque classe contient des comportements uniques pour la rotation et pour identifier son type. Elles héritent de la classe `Tile` pour partager les propriétés de base, tout en introduisant des comportements supplémentaires propres à chaque forme.
+Le modèle est responsable de la logique de jeu, y compris la gestion des tuiles, du plateau, des joueurs et des objectifs.
 
-### 3. **Classe `TileFactory`**
-La classe `TileFactory` est responsable de la création des différentes tuiles. Elle permet de générer des instances des types de tuiles disponibles, comme les tuiles de type T, ligne, et angle. Cela centralise la logique de création des objets de type tuile et simplifie l'instanciation dans d'autres parties du jeu.
+#### Tile (Tuile)
+Classe abstraite représentant une tuile. Chaque tuile peut avoir différentes configurations d'ouverture (haut, bas, gauche, droite) et peut être de différents types : T, Angle, ou Ligne.
 
-### 4. **Enum `Direction`**
-L'énumération `Direction` représente les différentes directions possibles pour déplacer des éléments dans le jeu : haut, bas, gauche, droite. Elle est utilisée pour garantir que seules ces directions sont manipulées dans le code, réduisant ainsi les erreurs liées à des valeurs incorrectes.
+**Méthodes principales :**
+- `rotate(direction : Direction)` : Permet de faire pivoter la tuile.
+- `getType()` : Renvoie le type de la tuile.
+- `output()` : Retourne une représentation textuelle de la tuile.
 
-### 5. **Enum `TypeTile`**
-L'énumération `TypeTile` décrit les trois types de tuiles disponibles dans le jeu. Chaque valeur correspond à un type de tuile (T, ligne, angle). Cela permet de simplifier la gestion des tuiles en assurant que chaque tuile possède un type bien défini et reconnu dans tout le système.
+#### TileFactory (Usine de tuiles)
+Crée différentes tuiles (T, Angle, Ligne). Cette classe est responsable de la création des objets Tile.
 
-### 6. **Classe `Board`**
-La classe `Board` représente le plateau de jeu. Elle contient un ensemble de tuiles disposées en une grille, ainsi qu'une tuile supplémentaire qui peut être utilisée pour des manipulations spéciales. La classe permet de déplacer des lignes ou des colonnes de tuiles, de récupérer une tuile à une position donnée, et de gérer l'état général du plateau.
+#### Board (Plateau)
+Représente le plateau de jeu sous forme de grille de tuiles. Il contient des méthodes pour manipuler les lignes et les colonnes du plateau (pousser les lignes/colonnes, ajouter des observateurs, etc.).
 
-### 7. **Classe `Objective`**
-La classe `Objective` représente les objectifs que les joueurs doivent accomplir pour gagner. Chaque objectif est lié à une position spécifique sur le plateau, et le joueur doit atteindre cette position pour le récupérer. La classe permet de définir et de récupérer la position de chaque objectif.
+#### Player (Joueur)
+Représente un joueur avec un objectif à atteindre sur le plateau. Il suit sa position et les objectifs qu'il doit accomplir.
 
-### 8. **Classe `Player`**
-Cette classe représente un joueur dans le jeu. Elle gère la position actuelle du joueur ainsi que ses objectifs. Elle permet également de déplacer le joueur sur le plateau et de vérifier si ce dernier a atteint son objectif courant. Les méthodes associées permettent de suivre la progression du joueur et de notifier son état au système.
+#### Objective (Objectif)
+Un objectif est une case spécifique que le joueur doit atteindre. Chaque objectif a une position associée.
 
-### 9. **Classe `Game`**
-La classe `Game` orchestre l'ensemble du jeu. Elle gère l'initialisation du jeu, le démarrage, ainsi que les actions des joueurs (déplacer les joueurs et les tuiles). Elle permet de suivre l'état du jeu et de vérifier si la partie doit se terminer.
+#### Game (Jeu)
+Gère l'état du jeu, le tour des joueurs, les mouvements des joueurs, et la gestion des objectifs. Il gère également les interactions entre les différents composants du modèle.
 
-### 10. **Classe `Position`**
-La classe `Position` représente une position sur le plateau. Elle contient des informations sur les coordonnées X et Y, permettant de localiser des éléments comme les joueurs, les tuiles et les objectifs. Des méthodes sont disponibles pour manipuler ces coordonnées et comparer des positions entre elles que l'on va utilisé lorsqu'on veut savoir si le joueur a trouvé son objectif courant ou s'il a gagné.
+#### Position (Position)
+Représente une position sur le plateau avec des coordonnées X et Y.
 
-### 11. **Interface `BoardObserver`**
-L'interface `BoardObserver` définit les méthodes permettant à la vue de réagir aux changements du plateau. Elle permet de recevoir des notifications lorsqu'une tuile est déplacée ou lorsque l'état général du plateau change.
+### 2. Observateurs
 
-### 12. **Interface `PlayerObserver`**
-L'interface `PlayerObserver` définit les méthodes permettant de suivre les changements d'état d'un joueur, notamment ses déplacements et ses objectifs récupérés.
+Plusieurs classes d'observateurs sont définies pour mettre à jour les différentes parties du jeu lorsque des changements se produisent.
 
-### 13. **Classes de Vue (`MainScreen`, `EndScreen`)**
-Ces classes sont responsables de l'affichage du jeu à l'utilisateur. Elles réagissent aux mises à jour du plateau et des joueurs, affichant les informations du jeu en temps réel, telles que l'état du plateau, les informations des joueurs et le résultat de la partie.
+#### BoardObserver (Observateur de Plateau)
+Permet de recevoir des notifications lors des changements sur le plateau, par exemple lors du déplacement d'une ligne ou d'une colonne.
 
-### 14. **Classe `GameController`**
-Le contrôleur du jeu est responsable de la gestion des actions de l'utilisateur. Il permet de manipuler les tuiles (rotation, déplacement de lignes et de colonnes) et de déplacer les joueurs en fonction des commandes fournies par l'utilisateur.
+#### PlayerObserver (Observateur de Joueur)
+Reçoit des notifications concernant la position du joueur et l'état des objectifs.
 
-## Choix de conception
+#### TileObserver (Observateur de Tuile)
+Gère les notifications concernant les rotations des tuiles.
 
-- **Enumérations** : L'énumération `Direction` a été utilisée pour limiter les directions de mouvement possibles dans le jeu à des valeurs bien définies. Cela simplifie le code et prévient les erreurs dues à des entrées incorrectes. De même, `TypeTile` permet de centraliser les types de tuiles disponibles, facilitant leur gestion.
-- **Héritage** : Les classes `TileT`, `TileLine`, et `TileAngle` héritent de la classe `Tile` pour partager des comportements communs, comme la gestion de la position, tout en permettant des comportements spécifiques pour chaque type de tuile, comme la rotation.
-- **Patron de conception Observer** : Les interfaces `BoardObserver` et `PlayerObserver` permettent de suivre les modifications dans le modèle et d'envoyer des mises à jour vers la vue, garantissant une séparation claire entre la logique du jeu et l'affichage.
+### 3. Vue (View)
+
+La vue est responsable de l'affichage des informations et de l'interaction avec l'utilisateur.
+
+#### BoardTextManager, PlayerTextManager, TileTextManager
+Ces classes implémentent les interfaces d'observateurs pour afficher les informations pertinentes sur les tuiles, le joueur, et le plateau.
+
+#### GameDisplay
+Affiche l'état du jeu, y compris le plateau et les informations du joueur. Elle initialise le plateau, affiche les joueurs et gère les interactions.
+
+#### EndScreen
+Affiche l'écran de fin, y compris le gagnant du jeu.
+
+### 4. Contrôleur (Controller)
+
+Le contrôleur gère l'interaction entre la vue et le modèle.
+
+#### GameController
+Gère les actions du jeu telles que les rotations des tuiles, le déplacement des joueurs, et la gestion des tours de jeu. Il est responsable de la mise à jour de l'état du jeu en fonction des actions du joueur.
+
+#### LabyrintheApp
+Point d'entrée principal de l'application. Elle initialise le jeu et l'affichage.
+
+## Relations entre les Composants
+
+- Le `TileFactory` est utilisé pour créer des instances des différentes tuiles (T, Angle, Ligne).
+- `LabyrintheApp` utilise plusieurs composants, notamment le plateau (`Board`), les joueurs (`Player`), et l'affichage (`Display`).
+- Le `Game` gère l'état du jeu, en reliant les tuiles, les objectifs et les joueurs.
+- Le `GameController` interagit avec les composants de la vue et du modèle pour mettre à jour l'état du jeu.
+- Le modèle observe les changements dans la vue à travers les interfaces d'observateurs, et la vue réagit aux modifications du modèle pour mettre à jour l'affichage.
+
+## Conclusion
+
+On a pas fini le jeu, il y'avait encore les objectifs à implémenter. On avait de nombreuses idées qu'on a malheuresement pas pu finir.
+Ce qui nous manque :
+- Il y'a un probleme sur l'affichage quand on rotate l'extra tuile elle ne s'affiche pas correctement quand on la push dans le board
+- Les objectifs
+- L'écran de fin
