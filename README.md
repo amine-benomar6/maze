@@ -1,4 +1,3 @@
-# INSTALL.md
 
 ## Prérequis
 Avant de commencer, assurez-vous d'avoir les éléments suivants installés sur votre système :
@@ -9,7 +8,7 @@ Avant de commencer, assurez-vous d'avoir les éléments suivants installés sur 
 ## Récupération du projet
 1. Clonez le dépôt Git sur votre machine locale :
    ```bash
-   git clone git@git.unistra.fr:benomar-sami/a31-labyrinthe.git
+   git clone git@github.com:amine-benomar6/maze.git
 
 2. Accédez au dossier du projet
 
