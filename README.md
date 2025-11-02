@@ -14,9 +14,9 @@ en vidéo avec Ludochrono : https://www.youtube.com/watch?v=pGzenrQnJ9g.
 ## Matériels du jeu de société 
 
 50 tuiles de 3 sortes :
-20 angles dont 4 sont fixes et 16 sont déplaçables,
-12 sections droites toutes déplaçables,
-18 en forme de "T" dont 12 sont fixes et 10 sont déplaçables.
+- 20 angles dont 4 sont fixes et 16 sont déplaçables,
+- 12 sections droites toutes déplaçables,
+- 18 en forme de "T" dont 12 sont fixes et 10 sont déplaçables.
 
 Il y a également 24 objectifs, avec un nombre fixe de 4 joueurs
 
